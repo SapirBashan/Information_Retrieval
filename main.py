@@ -6,6 +6,7 @@ from nltk.tokenize import word_tokenize
 import nltk
 import os
 
+
 # Ensure required NLTK packages are downloaded
 def ensure_nltk_packages():
     packages = [
@@ -17,7 +18,9 @@ def ensure_nltk_packages():
         except LookupError:
             nltk.download(package)
 
+
 ensure_nltk_packages()
+
 
 # Text cleaning functions
 def clean_text(text):
@@ -26,11 +29,13 @@ def clean_text(text):
         return ' '.join(tokens)
     return text
 
+
 def get_wordnet_pos(word):
     from nltk.corpus.reader.wordnet import ADJ, VERB, NOUN, ADV
     tag_map = {'J': ADJ, 'V': VERB, 'N': NOUN, 'R': ADV}
     tag = nltk.pos_tag([word])[0][1][0].upper()
     return tag_map.get(tag, NOUN)
+
 
 def lemmatize_text(text):
     if not isinstance(text, str):
@@ -40,6 +45,7 @@ def lemmatize_text(text):
     lemmatized = [lemmatizer.lemmatize(token, get_wordnet_pos(token)) for token in tokens]
     return " ".join(lemmatized)
 
+
 # Remove stopwords
 def remove_stopwords(text):
     if not isinstance(text, str):
@@ -48,6 +54,7 @@ def remove_stopwords(text):
     tokens = word_tokenize(text)
     filtered_tokens = [token for token in tokens if token.lower() not in stop_words]
     return " ".join(filtered_tokens)
+
 
 # File paths
 input_path = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\posts_first_targil.xlsx'
@@ -74,12 +81,14 @@ try:
 
         # Save the clean text data (without stopwords and including ID)
         clean_no_stopwords_output_file = os.path.join(output_dir, f"clean_no_stopwords_{sheet_name}.xlsx")
-        sheet_data[['ID', 'Cleaned Text without Stopwords']].to_excel(clean_no_stopwords_output_file, index=False, header=False)
+        sheet_data[['ID', 'Cleaned Text without Stopwords']].to_excel(clean_no_stopwords_output_file, index=False,
+                                                                      header=False)
         print(f"Cleaned text without stopwords for {sheet_name} saved as {clean_no_stopwords_output_file}")
 
         # Save the lemmatized text data (without stopwords and including ID)
         lemmatized_no_stopwords_output_file = os.path.join(output_dir, f"lemmatized_no_stopwords_{sheet_name}.xlsx")
-        sheet_data[['ID', 'Lemmatized Text without Stopwords']].to_excel(lemmatized_no_stopwords_output_file, index=False, header=False)
+        sheet_data[['ID', 'Lemmatized Text without Stopwords']].to_excel(lemmatized_no_stopwords_output_file,
+                                                                         index=False, header=False)
         print(f"Lemmatized text without stopwords for {sheet_name} saved as {lemmatized_no_stopwords_output_file}")
 
     print("Cleaning, lemmatization, and stopwords removal completed successfully. All sheets saved as separate files.")
