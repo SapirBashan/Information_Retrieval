@@ -32,7 +32,7 @@ def load_text_files(directory):
     return documents, file_names
 
 
-def create_tfidf_matrices(input_dirs, output_dir):
+def create_tfidf_matrices(input_dirs, output_dir, output_dir_top_20 , output_dir_matrix_shape , output_dir_number_of_ft, output_dir_processed):
     """
     Create TF-IDF matrices for different text types and sources.
 
@@ -71,18 +71,18 @@ def create_tfidf_matrices(input_dirs, output_dir):
 
         # Save matrices and feature importance
         # TF-IDF Matrix
-        sp.save_npz(os.path.join(output_dir, f'tfidf_matrix_{source_type}.npz'), tfidf_matrix)
+        sp.save_npz(os.path.join(output_dir_matrix_shape, f'tfidf_matrix_{source_type}.npz'), tfidf_matrix)
 
         # Feature Importance
         feature_importances.to_csv(
-            os.path.join(output_dir, f'feature_importances_{source_type}.csv'),
+            os.path.join(output_dir_number_of_ft, f'feature_importances_{source_type}.csv'),
             index=False
         )
 
         # Top 20 features
         top_20_features = feature_importances.head(20)
         top_20_features.to_csv(
-            os.path.join(output_dir, f'top_20_features_{source_type}.csv'),
+            os.path.join(output_dir_top_20 , f'top_20_features_{source_type}.csv'),
             index=False
         )
 
@@ -92,7 +92,7 @@ def create_tfidf_matrices(input_dirs, output_dir):
             'TF-IDF Vector Index': range(len(file_names))
         })
         metadata_df.to_csv(
-            os.path.join(output_dir, f'document_metadata_{source_type}.csv'),
+            os.path.join(output_dir_processed, f'document_metadata_{source_type}.csv'),
             index=False
         )
 
@@ -106,8 +106,18 @@ def main():
     base_input_dir = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\output_sheets'
 
     # Output directory
+    output_dir_top_20 = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output\top_20'
+    output_dir_processed = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output\processed'
+    output_dir_matrix_shape = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output\matrix_shape'
+    output_dir_number_of_ft = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output\number_of_ft'
     output_dir = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output'
+
+    os.makedirs(output_dir_processed, exist_ok=True)
+    os.makedirs(output_dir_matrix_shape, exist_ok=True)
+    os.makedirs(output_dir_top_20, exist_ok=True)
+    os.makedirs(output_dir_number_of_ft, exist_ok=True)
     os.makedirs(output_dir, exist_ok=True)
+
 
     # Input directories
     input_dirs = {
@@ -118,6 +128,7 @@ def main():
         'lemmatized_A-J': os.path.join(base_input_dir, 'lemmatized'),
         'lemmatized_BBC': os.path.join(base_input_dir, 'lemmatized'),
         'lemmatized_J-P': os.path.join(base_input_dir, 'lemmatized'),
+        'lemmatized_NY-T': os.path.join(base_input_dir, 'lemmatized'),
         'clean_no_stopwords_A-J.xlsx': os.path.join(base_input_dir, 'stop_word_clean'),
         'clean_no_stopwords_BBC.xlsx': os.path.join(base_input_dir, 'stop_word_clean'),
         'clean_no_stopwords_J-P.xlsx': os.path.join(base_input_dir, 'stop_word_clean'),
@@ -129,7 +140,7 @@ def main():
     }
 
     # Create TF-IDF matrices
-    create_tfidf_matrices(input_dirs, output_dir)
+    create_tfidf_matrices(input_dirs, output_dir, output_dir_top_20 , output_dir_matrix_shape , output_dir_number_of_ft, output_dir_processed)
 
 
 if __name__ == "__main__":
