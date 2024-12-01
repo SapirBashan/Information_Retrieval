@@ -31,8 +31,7 @@ def load_text_files(directory):
 
     return documents, file_names
 
-
-def create_tfidf_matrices(input_dirs, output_dir, output_dir_top_20 , output_dir_matrix_shape , output_dir_number_of_ft, output_dir_processed):
+def create_tfidf_matrices(input_dirs, output_dir, output_dir_top_20, output_dir_matrix_shape, output_dir_number_of_ft, output_dir_processed):
     """
     Create TF-IDF matrices for different text types and sources.
 
@@ -63,38 +62,44 @@ def create_tfidf_matrices(input_dirs, output_dir, output_dir_top_20 , output_dir
         # Get feature names (words)
         feature_names = vectorizer.get_feature_names_out()
 
-        # Create a DataFrame of feature importances
+        # Save the TF-IDF matrix as a dense CSV (vectors)
+        tfidf_dense = tfidf_matrix.toarray()  # Convert sparse matrix to dense
+        tfidf_vectors_df = pd.DataFrame(tfidf_dense, columns=feature_names)
+        tfidf_vectors_df['Source File'] = file_names  # Add metadata (file names)
+
+        # Save vectors to a CSV file
+        vectors_output_file = os.path.join(output_dir_processed, f'vectors_{source_type}.csv')
+        tfidf_vectors_df.to_csv(vectors_output_file, index=False)
+        print(f"Vectors for {source_type} saved to {vectors_output_file}")
+
+        # Save the sparse matrix for further processing
+        sp.save_npz(os.path.join(output_dir_matrix_shape, f'tfidf_matrix_{source_type}.npz'), tfidf_matrix)
+
+        # Save Feature Importance
         feature_importances = pd.DataFrame({
             'Feature': feature_names,
             'TF-IDF Importance': tfidf_matrix.sum(axis=0).A1
         }).sort_values('TF-IDF Importance', ascending=False)
 
-        # Save matrices and feature importance
-        # TF-IDF Matrix
-        sp.save_npz(os.path.join(output_dir_matrix_shape, f'tfidf_matrix_{source_type}.npz'), tfidf_matrix)
-
-        # Feature Importance
         feature_importances.to_csv(
             os.path.join(output_dir_number_of_ft, f'feature_importances_{source_type}.csv'),
             index=False
         )
 
-        # Top 20 features
+        # Save Top 20 features
         top_20_features = feature_importances.head(20)
         top_20_features.to_csv(
-            os.path.join(output_dir_top_20 , f'top_20_features_{source_type}.csv'),
+            os.path.join(output_dir_top_20, f'top_20_features_{source_type}.csv'),
             index=False
         )
 
-        # Metadata file to track document sources
+        # Save metadata file
         metadata_df = pd.DataFrame({
             'Source File': file_names,
             'TF-IDF Vector Index': range(len(file_names))
         })
-        metadata_df.to_csv(
-            os.path.join(output_dir_processed, f'document_metadata_{source_type}.csv'),
-            index=False
-        )
+        metadata_output_file = os.path.join(output_dir_processed, f'document_metadata_{source_type}.csv')
+        metadata_df.to_csv(metadata_output_file, index=False)
 
         print(f"Processed {source_type}:")
         print(f"- Matrix shape: {tfidf_matrix.shape}")
@@ -103,14 +108,14 @@ def create_tfidf_matrices(input_dirs, output_dir, output_dir_top_20 , output_dir
 
 def main():
     # Base input directory
-    base_input_dir = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\output_sheets'
+    base_input_dir = r'output_sheets'
 
     # Output directory
-    output_dir_top_20 = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output\top_20'
-    output_dir_processed = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output\processed'
-    output_dir_matrix_shape = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output\matrix_shape'
-    output_dir_number_of_ft = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output\number_of_ft'
-    output_dir = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\TF_IDF_output'
+    output_dir_top_20 = r'top_20'
+    output_dir_processed = r'TF_IDF_output\processed'
+    output_dir_matrix_shape = r'TF_IDF_output\matrix_shape'
+    output_dir_number_of_ft = r'TF_IDF_output\number_of_ft'
+    output_dir = r'TF_IDF_output'
 
     os.makedirs(output_dir_processed, exist_ok=True)
     os.makedirs(output_dir_matrix_shape, exist_ok=True)

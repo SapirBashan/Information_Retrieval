@@ -6,7 +6,6 @@ from nltk.tokenize import word_tokenize
 import nltk
 import os
 
-
 # Ensure required NLTK packages are downloaded
 def ensure_nltk_packages():
     packages = [
@@ -21,12 +20,13 @@ def ensure_nltk_packages():
 
 ensure_nltk_packages()
 
-
 # Text cleaning functions
 def clean_text(text):
     if isinstance(text, str):
-        tokens = re.findall(r'\w+|[^\w\s]', text, re.UNICODE)
-        return ' '.join(tokens)
+        # Remove apostrophes without splitting words, add spaces around other punctuation
+        text = re.sub(r"'", "", text)  # Remove apostrophes
+        text = re.sub(r"([^\w\s])", r" \1 ", text)  # Add space around punctuation
+        return re.sub(r'\s+', ' ', text).strip()  # Normalize spaces
     return text
 
 
@@ -41,6 +41,8 @@ def lemmatize_text(text):
     if not isinstance(text, str):
         return ""
     lemmatizer = WordNetLemmatizer()
+    # Remove all punctuation including apostrophes
+    text = re.sub(r"[^\w\s]", "", text)
     tokens = word_tokenize(text)
     lemmatized = [lemmatizer.lemmatize(token, get_wordnet_pos(token)) for token in tokens]
     return " ".join(lemmatized)
@@ -57,11 +59,17 @@ def remove_stopwords(text):
 
 
 # File paths
-input_path = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\posts_first_targil.xlsx'
-output_dir = r'C:\Users\sapir\OneDrive\שולחן העבודה\סמסטר א שנה ד\איחזור מידע\IR-TF_IDF_Ex1\output_sheets'
+input_path = r'posts_first_targil.xlsx'
+output_dir = r'output_sheets'
 
-# Create output directory if it doesn't exist
-os.makedirs(output_dir, exist_ok=True)
+# Create output subdirectories
+clean_dir = os.path.join(output_dir, 'clean')
+lemmatized_dir = os.path.join(output_dir, 'lemmatized')
+stop_word_clean_dir = os.path.join(output_dir, 'stop_word_clean')
+stop_word_lemmatized_dir = os.path.join(output_dir, 'stop_word_lemmatized')
+
+for directory in [clean_dir, lemmatized_dir, stop_word_clean_dir, stop_word_lemmatized_dir]:
+    os.makedirs(directory, exist_ok=True)
 
 # Processing data
 try:
@@ -79,19 +87,21 @@ try:
             sheet_data['Cleaned Text without Stopwords'] = sheet_data['Cleaned Text'].apply(remove_stopwords)
             sheet_data['Lemmatized Text without Stopwords'] = sheet_data['Lemmatized Text'].apply(remove_stopwords)
 
-        # Save the clean text data (without stopwords and including ID)
-        clean_no_stopwords_output_file = os.path.join(output_dir, f"clean_no_stopwords_{sheet_name}.xlsx")
-        sheet_data[['ID', 'Cleaned Text without Stopwords']].to_excel(clean_no_stopwords_output_file, index=False,
-                                                                      header=False)
-        print(f"Cleaned text without stopwords for {sheet_name} saved as {clean_no_stopwords_output_file}")
+            # Save files into corresponding directories
+            sheet_data[['ID', 'Cleaned Text']].to_excel(
+                os.path.join(clean_dir, f"{sheet_name}_clean.xlsx"), index=False, header=False
+            )
+            sheet_data[['ID', 'Lemmatized Text']].to_excel(
+                os.path.join(lemmatized_dir, f"{sheet_name}_lemmatized.xlsx"), index=False, header=False
+            )
+            sheet_data[['ID', 'Cleaned Text without Stopwords']].to_excel(
+                os.path.join(stop_word_clean_dir, f"{sheet_name}_stopword_clean.xlsx"), index=False, header=False
+            )
+            sheet_data[['ID', 'Lemmatized Text without Stopwords']].to_excel(
+                os.path.join(stop_word_lemmatized_dir, f"{sheet_name}_stopword_lemmatized.xlsx"), index=False, header=False
+            )
 
-        # Save the lemmatized text data (without stopwords and including ID)
-        lemmatized_no_stopwords_output_file = os.path.join(output_dir, f"lemmatized_no_stopwords_{sheet_name}.xlsx")
-        sheet_data[['ID', 'Lemmatized Text without Stopwords']].to_excel(lemmatized_no_stopwords_output_file,
-                                                                         index=False, header=False)
-        print(f"Lemmatized text without stopwords for {sheet_name} saved as {lemmatized_no_stopwords_output_file}")
-
-    print("Cleaning, lemmatization, and stopwords removal completed successfully. All sheets saved as separate files.")
+    print("Processing completed successfully. Files saved in structured directories.")
 
 except Exception as e:
     print(f"An error occurred: {e}")
