@@ -126,22 +126,14 @@ def main():
 
     # Input directories
     input_dirs = {
-        'clean_A-J': os.path.join(base_input_dir, 'clean'),
-        'clean_BBC': os.path.join(base_input_dir, 'clean'),
-        'clean_J-P': os.path.join(base_input_dir, 'clean'),
-        'clean_NY-T': os.path.join(base_input_dir, 'clean'),
-        'lemmatized_A-J': os.path.join(base_input_dir, 'lemmatized'),
-        'lemmatized_BBC': os.path.join(base_input_dir, 'lemmatized'),
-        'lemmatized_J-P': os.path.join(base_input_dir, 'lemmatized'),
-        'lemmatized_NY-T': os.path.join(base_input_dir, 'lemmatized'),
-        'clean_no_stopwords_A-J.xlsx': os.path.join(base_input_dir, 'stop_word_clean'),
-        'clean_no_stopwords_BBC.xlsx': os.path.join(base_input_dir, 'stop_word_clean'),
-        'clean_no_stopwords_J-P.xlsx': os.path.join(base_input_dir, 'stop_word_clean'),
-        'clean_no_stopwords_NY-T.xlsx': os.path.join(base_input_dir, 'stop_word_clean'),
-        'lemmatized_no_stopwords_A-J.xlsx': os.path.join(base_input_dir, 'stop_word_lemmatized'),
-        'lemmatized_no_stopwords_BBC.xlsx': os.path.join(base_input_dir, 'stop_word_lemmatized'),
-        'lemmatized_no_stopwords_J-P.xlsx': os.path.join(base_input_dir, 'stop_word_lemmatized'),
-        'lemmatized_no_stopwords_NY-T.xlsx': os.path.join(base_input_dir, 'stop_word_lemmatized'),
+        'clean_no_stopwords_A-J': os.path.join(base_input_dir, 'stop_word_clean'),
+        'clean_no_stopwords_BBC': os.path.join(base_input_dir, 'stop_word_clean'),
+        'clean_no_stopwords_J-P': os.path.join(base_input_dir, 'stop_word_clean'),
+        'clean_no_stopwords_NY-T': os.path.join(base_input_dir, 'stop_word_clean'),
+        'lemmatized_no_stopwords_A-J': os.path.join(base_input_dir, 'stop_word_lemmatized'),
+        'lemmatized_no_stopwords_BBC': os.path.join(base_input_dir, 'stop_word_lemmatized'),
+        'lemmatized_no_stopwords_J-P': os.path.join(base_input_dir, 'stop_word_lemmatized'),
+        'lemmatized_no_stopwords_NY-T': os.path.join(base_input_dir, 'stop_word_lemmatized'),
     }
 
     # Create TF-IDF matrices

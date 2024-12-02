@@ -63,12 +63,10 @@ input_path = r'posts_first_targil.xlsx'
 output_dir = r'output_sheets'
 
 # Create output subdirectories
-clean_dir = os.path.join(output_dir, 'clean')
-lemmatized_dir = os.path.join(output_dir, 'lemmatized')
 stop_word_clean_dir = os.path.join(output_dir, 'stop_word_clean')
 stop_word_lemmatized_dir = os.path.join(output_dir, 'stop_word_lemmatized')
 
-for directory in [clean_dir, lemmatized_dir, stop_word_clean_dir, stop_word_lemmatized_dir]:
+for directory in [stop_word_clean_dir, stop_word_lemmatized_dir]:
     os.makedirs(directory, exist_ok=True)
 
 # Processing data
@@ -88,12 +86,6 @@ try:
             sheet_data['Lemmatized Text without Stopwords'] = sheet_data['Lemmatized Text'].apply(remove_stopwords)
 
             # Save files into corresponding directories
-            sheet_data[['ID', 'Cleaned Text']].to_excel(
-                os.path.join(clean_dir, f"{sheet_name}_clean.xlsx"), index=False, header=False
-            )
-            sheet_data[['ID', 'Lemmatized Text']].to_excel(
-                os.path.join(lemmatized_dir, f"{sheet_name}_lemmatized.xlsx"), index=False, header=False
-            )
             sheet_data[['ID', 'Cleaned Text without Stopwords']].to_excel(
                 os.path.join(stop_word_clean_dir, f"{sheet_name}_stopword_clean.xlsx"), index=False, header=False
             )
