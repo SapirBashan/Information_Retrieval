@@ -125,5 +125,3 @@ Sapir Bashan 214103368
 
 - Course Lecturer
 - NLP Research Community
-```
-
