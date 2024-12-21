@@ -190,15 +190,7 @@ print(classification_report(y_test, y_pred))
 
 ---
 
-### Classification Results  
-| **Classifier**  | **Precision** | **Recall** | **F1-Score** | **Accuracy** |  
-|-----------------|--------------|-----------|-------------|-------------|  
-| **Naive Bayes** |              |           |             |             |  
-| **SVM**         |              |           |             |             |  
-| **LoR**         |              |           |             |             |  
-| **RF**          |              |           |             |             |  
-| **ANN (ReLU)**  |              |           |             |             |  
-| **ANN (GELU)**  |              |           |             |             |  
+### Classification Results - you can see in the jupiter files
 
 ---
 
